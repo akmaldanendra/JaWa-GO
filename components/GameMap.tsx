@@ -7,33 +7,32 @@ import 'leaflet-defaulticon-compatibility';
 import { useState, useEffect } from 'react';
 import L from 'leaflet';
 
-// --- ICON SETUP (CUSTOM IMAGE) ---
 
-// 1. Icon User (Titik Biru GPS - Tetap CSS biar ringan)
+// 1. Icon User
 const userIcon = new L.DivIcon({
   className: 'bg-transparent',
   html: '<div style="background-color: #3b82f6; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>',
 });
 
-// 2. Icon Wayang (Ganti Pokeball jadi Logo Kamu)
+// 2. Icon Wayang 
 const wayangIcon = new L.Icon({
-  iconUrl: '/wayang-marker.png', // <--- PASTIIN FILE INI ADA DI FOLDER PUBLIC
-  iconSize: [35, 35],    // Ukuran gambar (lebar, tinggi)
-  iconAnchor: [22, 45],  // Titik tumpu (tengah bawah)
-  popupAnchor: [0, -50], // Posisi popup kalo ada
-  className: 'drop-shadow-lg' // Efek bayangan & animasi
+  iconUrl: '/wayang-marker.png', 
+  iconSize: [35, 35],   
+  iconAnchor: [22, 45],  
+  popupAnchor: [0, -50], 
+  className: 'drop-shadow-lg' 
 });
 
-// 3. Icon Landmark (Ganti Belah Ketupat jadi Logo Kamu)
+// 3. Icon Landmark 
 const landmarkIcon = new L.Icon({
-  iconUrl: '/landmark-marker.png', // <--- PASTIIN FILE INI ADA DI FOLDER PUBLIC
+  iconUrl: '/landmark-marker.png', 
   iconSize: [50, 50],
   iconAnchor: [25, 50],
   popupAnchor: [0, -45],
   className: 'drop-shadow-lg'
 });
 
-// 4. Icon Landmark Visited (Ganti Centang Hijau jadi Logo Kamu)
+// 4. Icon Landmark Visited
 const visitedIcon = new L.DivIcon({
   className: 'bg-transparent',
   html: `<div style="
@@ -48,7 +47,6 @@ const visitedIcon = new L.DivIcon({
 });
 
 
-// --- SUB-COMPONENT: GPS TRACKER ---
 function UserLocationHandler({ setUserLoc }: { setUserLoc: (loc: [number, number]) => void }) {
   const map = useMap();
   const [position, setPosition] = useState<L.LatLng | null>(null);
@@ -72,7 +70,6 @@ function UserLocationHandler({ setUserLoc }: { setUserLoc: (loc: [number, number
   );
 }
 
-// --- SUB-COMPONENT: RUTE & NAVIGASI ---
 function RouteLayer({ userLoc, targetLoc, onClear }: { userLoc: [number, number] | null, targetLoc: [number, number] | null, onClear: () => void }) {
   const [routes, setRoutes] = useState<any[]>([]);
   const [activeRouteIdx, setActiveRouteIdx] = useState(0);
@@ -149,7 +146,6 @@ function RouteLayer({ userLoc, targetLoc, onClear }: { userLoc: [number, number]
         />
       )}
 
-      {/* PANEL NAVIGASI */}
       <div className="leaflet-top leaflet-right" style={{ marginTop: '80px', marginRight: '10px', pointerEvents: 'auto' }}>
         <div className="bg-white rounded-xl shadow-2xl overflow-hidden min-w-[240px] animate-in slide-in-from-right border border-gray-200">
           
@@ -209,7 +205,6 @@ function RouteLayer({ userLoc, targetLoc, onClear }: { userLoc: [number, number]
   );
 }
 
-// --- MAIN COMPONENT ---
 interface GameMapProps {
   spawns: any[];
   landmarks: any[];
@@ -245,7 +240,6 @@ export default function GameMap({ spawns, landmarks, visitedLandmarks, userLoc, 
         onClear={onClearRoute} 
       />
 
-      {/* Render Wayang (Semua pakai Icon yang sama: wayang-marker.png) */}
       {spawns.map((spawn) => (
         <Marker 
           key={`spawn-${spawn.id}`} 
@@ -257,7 +251,6 @@ export default function GameMap({ spawns, landmarks, visitedLandmarks, userLoc, 
         />
       ))}
 
-      {/* Render Landmark */}
       {landmarks.map((lm) => {
         const isVisited = visitedLandmarks.includes(lm.id);
         return (

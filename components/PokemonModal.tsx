@@ -4,7 +4,6 @@ import { calculateDistance, calculateETA } from '@/utils/geoHelper';
 export default function PokemonModal({ pokemon, userLoc, onClose, onRoute, onCatch, isCaught }: any) {
   if (!pokemon) return null;
 
-  // Logic ETA (Hanya hitung jika userLoc ada dan BELUM ditangkap)
   let distanceInfo = "???";
   let etaInfo = "???";
 
@@ -34,7 +33,6 @@ export default function PokemonModal({ pokemon, userLoc, onClose, onRoute, onCat
   };
   const rarityBg = rarityColors[pokemon.pokedex.rarity] || 'bg-slate-500';
 
-  // Format Tanggal Tangkap (Jika ada)
   const caughtDate = pokemon.caught_at 
     ? new Date(pokemon.caught_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
     : null;
@@ -42,10 +40,8 @@ export default function PokemonModal({ pokemon, userLoc, onClose, onRoute, onCat
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-end md:justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
       
-      {/* Container Modal */}
       <div className="relative w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[85vh]">
         
-        {/* HEADER */}
         <div className={`relative h-48 bg-gradient-to-br ${activeGradient} flex items-center justify-center p-4 shrink-0 overflow-hidden`}>
           <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
           
@@ -68,7 +64,6 @@ export default function PokemonModal({ pokemon, userLoc, onClose, onRoute, onCat
             className={`relative z-10 h-40 w-40 object-contain drop-shadow-2xl transition-transform duration-500 filter ${!isCaught ? 'brightness-0 contrast-125 opacity-70' : 'hover:scale-110'}`} 
           />
 
-          {/* STATUS BAR: TAMPILKAN JARAK (DI MAP) ATAU TANGGAL (DI KOLEKSI) */}
           {isCaught ? (
              <div className="absolute bottom-3 left-3 bg-emerald-500 text-white text-[9px] font-bold px-2 py-1 rounded-full shadow-lg flex items-center gap-1 border border-white/20 z-10 animate-in bounce-in">
                 ✅ DITANGKAP: {caughtDate}
@@ -87,10 +82,8 @@ export default function PokemonModal({ pokemon, userLoc, onClose, onRoute, onCat
           )}
         </div>
 
-        {/* BODY (Fixed Height Container) */}
         <div className="flex-1 bg-white px-5 py-5 flex flex-col overflow-hidden">
           
-          {/* Title Area (Fixed) */}
           <div className="flex justify-between items-start mb-2 shrink-0">
             <div>
               <h2 className="text-2xl font-black text-slate-800 uppercase italic tracking-tighter leading-none">{pokemon.pokedex.name}</h2>
@@ -105,18 +98,15 @@ export default function PokemonModal({ pokemon, userLoc, onClose, onRoute, onCat
 
           <hr className="border-slate-100 my-3 shrink-0" />
           
-          {/* Deskripsi Singkat (Fixed) */}
           <p className="text-slate-500 text-xs italic border-l-4 border-slate-300 pl-3 py-1 mb-4 leading-relaxed bg-slate-50 rounded-r-lg shrink-0">
             "{pokemon.pokedex.description}"
           </p>
 
-          {/* BOX FILOSOFI (SCROLLABLE AREA) */}
           <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 text-xs text-amber-900 leading-relaxed flex gap-3 shadow-sm relative overflow-hidden flex-1 min-h-0">
             <span className="text-xl mt-0.5 shrink-0">💡</span>
             <div className="w-full flex flex-col h-full">
                <strong className="block mb-2 text-amber-950 font-bold uppercase tracking-wide border-b border-amber-200 pb-1 shrink-0">Filosofi Budaya</strong>
                
-               {/* Area Scrollable Teks */}
                <div className="overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-amber-200 scrollbar-track-transparent flex-1">
                  {isCaught ? (
                    <div className="text-justify whitespace-pre-line pb-2">
@@ -132,7 +122,6 @@ export default function PokemonModal({ pokemon, userLoc, onClose, onRoute, onCat
             </div>
           </div>
 
-          {/* TOMBOL AKSI (Hanya muncul jika BELUM ditangkap) */}
           {!isCaught && (
             <div className="grid grid-cols-2 gap-3 mt-4 pt-2 border-t border-slate-100 shrink-0">
                 <button onClick={() => onRoute(pokemon)} className="btn h-12 min-h-0 bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-800 rounded-xl flex flex-col gap-0 normal-case transition-all shadow-sm">

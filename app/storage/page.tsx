@@ -11,12 +11,11 @@ export default function StoragePage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'wayang' | 'landmark'>('wayang');
   
-  // --- SORTING STATES ---
+  // SORTING STATES
   const [wayangSortBy, setWayangSortBy] = useState<'date' | 'rarity' | 'name'>('date');
   const [wayangSortOrder, setWayangSortOrder] = useState<'asc' | 'desc'>('desc'); // Default terbaru
   const [landmarkSortOrder, setLandmarkSortOrder] = useState<'asc' | 'desc'>('desc'); // Default terbaru
 
-  // State untuk Popup Detail
   const [selectedWayang, setSelectedWayang] = useState<any>(null);
   const [selectedLandmark, setSelectedLandmark] = useState<any>(null);
 
@@ -53,7 +52,7 @@ export default function StoragePage() {
     getStorage();
   }, []);
 
-  // --- SORTING LOGIC ---
+  //LOGIC
   const rarityValue = (rarity: string) => {
     switch(rarity) {
       case 'Legendary': return 3;
@@ -90,7 +89,6 @@ export default function StoragePage() {
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans relative">
-      {/* Header Fixed */}
       <div className="bg-white shadow-sm p-4 sticky top-0 z-10 border-b border-slate-200">
         <div className="flex justify-between items-center mb-4 max-w-2xl mx-auto">
           <h1 className="text-xl font-black text-slate-800 flex items-center gap-2">
@@ -99,7 +97,6 @@ export default function StoragePage() {
           <Link href="/" className="btn btn-sm btn-circle btn-ghost text-slate-500 bg-slate-100 hover:bg-slate-200">✕</Link>
         </div>
 
-        {/* Tabs Switcher */}
         <div className="flex gap-2 p-1 bg-slate-100 rounded-xl max-w-2xl mx-auto mb-3">
           <button 
             onClick={() => setActiveTab('wayang')}
@@ -115,11 +112,9 @@ export default function StoragePage() {
           </button>
         </div>
 
-        {/* FILTER & SORT BAR */}
         <div className="max-w-2xl mx-auto flex gap-2 overflow-x-auto scrollbar-hide pb-1">
           {activeTab === 'wayang' ? (
             <>
-              {/* Sort Criteria Dropdown */}
               <select 
                 className="select select-bordered select-xs w-full max-w-[140px] bg-white text-slate-600 focus:outline-none"
                 value={wayangSortBy}
@@ -130,7 +125,6 @@ export default function StoragePage() {
                 <option value="name">Nama (A-Z)</option>
               </select>
 
-              {/* Order Toggle */}
               <button 
                 onClick={() => setWayangSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
                 className="btn btn-xs btn-outline border-slate-300 text-slate-500"
@@ -139,7 +133,6 @@ export default function StoragePage() {
               </button>
             </>
           ) : (
-            // Sort Landmark (Cuma Tanggal)
             <button 
                 onClick={() => setLandmarkSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
                 className="btn btn-xs btn-outline border-slate-300 text-slate-500 w-full"
@@ -150,7 +143,6 @@ export default function StoragePage() {
         </div>
       </div>
 
-      {/* Content Area */}
       <div className="p-4 pb-20 max-w-2xl mx-auto">
         {loading ? (
           <div className="flex flex-col items-center mt-20 text-slate-400 gap-2">
@@ -159,14 +151,12 @@ export default function StoragePage() {
           </div>
         ) : (
           <>
-            {/* === TAB WAYANG === */}
             {activeTab === 'wayang' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {sortedWayang.length === 0 ? (
                   <p className="col-span-full text-center text-slate-400 text-sm mt-10 italic">Belum ada wayang yang ditangkap.</p>
                 ) : (
                   sortedWayang.map((item) => {
-                    // Visual Rarity
                     const isLegend = item.pokedex.rarity === 'Legendary';
                     const isRare = item.pokedex.rarity === 'Rare';
                     const borderColor = isLegend ? 'border-purple-300' : isRare ? 'border-blue-300' : 'border-slate-200';
@@ -202,7 +192,6 @@ export default function StoragePage() {
               </div>
             )}
 
-            {/* === TAB LANDMARK === */}
             {activeTab === 'landmark' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {sortedLandmarks.length === 0 ? (
@@ -233,7 +222,6 @@ export default function StoragePage() {
         )}
       </div>
 
-      {/* --- MODAL DETAILS --- */}
       {selectedWayang && (
         <PokemonModal 
           pokemon={selectedWayang} 
@@ -256,7 +244,6 @@ export default function StoragePage() {
         />
       )}
 
-      {/* Style Override */}
       {(selectedWayang || selectedLandmark) && (
         <style jsx global>{`
           .btn-primary, .btn-outline { display: none !important; }

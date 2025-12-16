@@ -1,7 +1,7 @@
 // utils/geoHelper.ts
 
 export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-  const R = 6371e3; // Meter
+  const R = 6371e3; 
   const φ1 = lat1 * Math.PI / 180;
   const φ2 = lat2 * Math.PI / 180;
   const Δφ = (lat2 - lat1) * Math.PI / 180;
@@ -12,11 +12,11 @@ export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2
             Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   
-  return R * c; // Hasil dalam Meter
+  return R * c; 
 };
 
 export const calculateETA = (distanceInMeters: number) => {
-  // Asumsi kecepatan rata-rata motor di Jogja: 40 km/jam
+  // Asumsi kecepatan rata-rata: 40 km/jam
   const speedKmh = 40;
   const distanceKm = distanceInMeters / 1000;
   const timeHours = distanceKm / speedKmh;
@@ -31,7 +31,6 @@ export const calculateETA = (distanceInMeters: number) => {
   return `${timeMinutes} mnt`;
 };
 
-// Mock Address Generator (Biar kayak Google Maps tanpa nembak API beneran yg lemot)
 export const getMockAddress = (lat: number, lng: number) => {
   const streets = ["Jl. Kaliurang", "Jl. Gejayan", "Jl. Malioboro", "Jl. Magelang", "Ringroad Utara", "Jl. Solo"];
   const randomStreet = streets[Math.floor(Math.abs(lat * 1000) % streets.length)];

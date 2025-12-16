@@ -5,35 +5,26 @@
   --foreground: #171717;
 }
 
-/* --- GAME MAP STYLES (2D MODE) --- */
 
-/* 1. Container Map */
 .map-container-3d {
-  /* Perspective dihapus biar jadi 2D */
   overflow: hidden;
-  background-color: #aed9e0; /* Warna dasar (Air/Langit) */
+  background-color: #aed9e0; 
 }
 
-/* 2. Leaflet Container (Normal 2D) */
 .leaflet-container {
   background: #aed9e0 !important;
-  /* Transform rotateX dihapus biar peta tegak lurus */
   height: 100% !important; 
   width: 100% !important;
 }
 
-/* 3. Filter Warna Tiles (Tetap Vivid ala Game) */
-/* Kita tetap pertahankan warnanya biar gak pucat kayak Google Maps biasa */
 .leaflet-tile-pane {
   filter: saturate(1.5) contrast(1) hue-rotate(-10deg) brightness(1);
 }
 
-/* 4. Sembunyiin Attribution Leaflet */
 .leaflet-control-attribution {
   display: none;
 }
 
-/* 5. Custom Animasi Slide Up (Buat Modal/Menu) */
 @keyframes slideUp {
   from { transform: translateY(100%); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
@@ -43,7 +34,6 @@
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 6. Font Default */
 body {
   font-family: Arial, Helvetica, sans-serif;
   background: #000;

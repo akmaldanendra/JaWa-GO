@@ -25,7 +25,6 @@ const GameMap = dynamic(() => import('@/components/GameMap'), {
 export default function Home() {
   const router = useRouter();
 
-  // --- STATE ---
   const [spawns, setSpawns] = useState<any[]>([]);
   const [landmarks, setLandmarks] = useState<any[]>([]); 
   const [visitedLandmarks, setVisitedLandmarks] = useState<number[]>([]); 
@@ -34,7 +33,6 @@ export default function Home() {
   const [profile, setProfile] = useState<any>(null);
   const [stats, setStats] = useState({ wayang: 0, landmark: 0 }); 
   
-  // UI State
   const [selectedPokemon, setSelectedPokemon] = useState<any>(null);
   const [selectedLandmark, setSelectedLandmark] = useState<any>(null);
   const [routeTarget, setRouteTarget] = useState<[number, number] | null>(null);
@@ -42,40 +40,33 @@ export default function Home() {
   const [showMenu, setShowMenu] = useState(false);
   const [levelUpModal, setLevelUpModal] = useState<any>(null);
   
-  // Modal States
   const [showAbout, setShowAbout] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
-  // Profile Edit State
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState('');
 
-  // Search State
   const [searchQuery, setSearchQuery] = useState('');
   const [searchCategory, setSearchCategory] = useState('all'); 
   const [searchElement, setSearchElement] = useState('all');
   const [isSearchActive, setIsSearchActive] = useState(false);
 
-  // --- 1. AUTH & INITIAL DATA ---
   useEffect(() => {
     const initData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push('/login'); return; }
       setUser(user);
 
-      // Ambil Profile
       const { data: profileData } = await supabase.from('profiles').select('*').eq('id', user.id).single();
       if (profileData) {
         setProfile(profileData);
         setNewName(profileData.display_name || 'Trainer');
       }
 
-      // Ambil Landmarks
       const { data: lmData } = await supabase.from('landmarks').select('*');
       if (lmData) setLandmarks(lmData);
 
-      // Ambil User Visits
       const { data: visitData, count: lmCount } = await supabase
         .from('user_landmarks')
         .select('landmark_id', { count: 'exact' })
@@ -83,7 +74,6 @@ export default function Home() {
       
       if (visitData) setVisitedLandmarks(visitData.map(v => v.landmark_id));
 
-      // Hitung Wayang
       const { count: wayangCount } = await supabase
         .from('user_storage')
         .select('*', { count: 'exact', head: true })
@@ -98,7 +88,6 @@ export default function Home() {
     initData();
   }, [router]);
 
-  // --- 2. FETCH WAYANG ---
   const fetchSpawns = async () => {
     const { data } = await supabase.from('view_active_spawns').select('*');
     if (data) {
@@ -125,7 +114,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // --- 3. HANDLERS ---
   const handleLogout = async () => {
     const confirm = window.confirm("Yakin mau logout dari game?");
     if (confirm) {
@@ -227,7 +215,6 @@ export default function Home() {
     }
   };
 
-  // --- 4. SEARCH LOGIC ---
   const searchResults = useMemo(() => {
     if (!searchQuery && searchCategory === 'all' && searchElement === 'all') return [];
     let results: any[] = [];
@@ -247,14 +234,11 @@ export default function Home() {
   }, [searchQuery, searchCategory, searchElement, spawns, landmarks]);
 
 
-  // Helper Date
   const joinDate = profile?.created_at ? new Date(profile.created_at).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }) : '2025';
 
-  // --- RENDER UI ---
   return (
     <div className="h-screen w-screen relative overflow-hidden bg-slate-900 font-sans">
       
-      {/* 1. LAYER MAP */}
       <div className="absolute inset-0 z-0 map-container-3d">
         <GameMap 
           spawns={spawns} 
@@ -269,7 +253,6 @@ export default function Home() {
         />
       </div>
 
-      {/* 2. HUD ATAS (SEARCH BAR) */}
       <div className={`absolute top-0 left-0 right-0 z-40 p-4 pt-6 transition-all duration-300 ${showMenu ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <div className="w-full max-w-xl mx-auto flex gap-2">
            <div className="flex-1 flex gap-2 bg-white/90 backdrop-blur-md p-1.5 rounded-full shadow-lg border border-white/40 items-center animate-in slide-in-from-top duration-500">
@@ -295,7 +278,6 @@ export default function Home() {
           
         </div>
 
-        {/* SEARCH RESULTS */}
         {isSearchActive && (searchResults.length > 0 || searchQuery || searchElement !== 'all') && (
           <div className="mt-2 w-full max-w-xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-100 animate-in slide-in-from-top-2 fade-in duration-200 max-h-[50vh] overflow-y-auto">
               <div className="bg-slate-50 px-4 py-2 border-b border-slate-100 flex justify-between items-center">
@@ -321,7 +303,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* 3. MENU OVERLAY */}
       {showMenu && (
         <div className="absolute inset-0 z-50 bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-end pb-32 animate-in fade-in duration-300" onClick={() => setShowMenu(false)}>
            <div className="grid grid-cols-2 gap-x-24 gap-y-10 mb-10 pointer-events-auto">
@@ -345,20 +326,16 @@ export default function Home() {
         </div>
       )}
 
-      {/* 4. MODAL POPUPS */}
 
-      {/* MODAL PROFIL */}
       {showProfile && profile && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div className="bg-white w-80 rounded-3xl p-6 shadow-2xl relative animate-in zoom-in-95 duration-300 border-t-4 border-indigo-500 text-center">
              <button onClick={() => setShowProfile(false)} className="absolute top-3 right-3 btn btn-sm btn-circle btn-ghost text-slate-400 hover:bg-slate-100">✕</button>
              
-             {/* Avatar */}
              <div className="w-20 h-20 bg-slate-100 rounded-full mx-auto mb-3 flex items-center justify-center border-4 border-indigo-100 shadow-inner">
                 <span className="text-4xl">👤</span>
              </div>
 
-             {/* NAMA + EDIT */}
              <div className="flex justify-center items-center gap-2 mb-1 h-8">
                {isEditingName ? (
                  <div className="flex gap-1 items-center justify-center animate-in fade-in">
@@ -385,13 +362,11 @@ export default function Home() {
                {profile.role} • Since {joinDate}
              </p>
 
-             {/* Level Big */}
              <div className="flex flex-col items-center mb-4">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Level Saat Ini</span>
                 <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-purple-600 leading-tight">{profile.level}</span>
              </div>
 
-             {/* XP Bar */}
              <div className="w-full bg-slate-100 rounded-full h-2.5 mb-1 overflow-hidden relative">
                 <div 
                   className="h-full bg-gradient-to-r from-indigo-400 to-purple-500" 
@@ -403,7 +378,6 @@ export default function Home() {
                 <span>{profile.next_level_xp} XP</span>
              </div>
 
-             {/* Stats Grid */}
              <div className="grid grid-cols-2 gap-3 mb-6">
                 <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
                    <div className="text-xl">👾</div>
@@ -417,13 +391,11 @@ export default function Home() {
                 </div>
              </div>
 
-             {/* LOGOUT */}
              <button onClick={handleLogout} className="btn btn-outline btn-error btn-sm w-full rounded-xl flex items-center gap-2 hover:bg-red-50"><span className="text-lg">🚪</span> Logout</button>
           </div>
         </div>
       )}
 
-      {/* MODAL TENTANG */}
       {showAbout && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div className="bg-white w-80 rounded-3xl p-6 shadow-2xl relative animate-in zoom-in-95 duration-300 border-t-4 border-blue-500 text-center">
@@ -440,7 +412,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* MODAL TIPS */}
       {showTips && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div className="bg-white w-80 rounded-3xl p-6 shadow-2xl relative animate-in zoom-in-95 duration-300 border-t-4 border-green-500 text-center">
@@ -457,10 +428,8 @@ export default function Home() {
         </div>
       )}
 
-      {/* 5. HUD BAWAH */}
       <div className="absolute bottom-0 left-0 right-0 z-[60] pb-6 pt-12 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none">
         <div className="px-4 flex items-end justify-between pointer-events-auto">
-          {/* PROFILE BUTTON */}
           <button onClick={() => setShowProfile(true)} className="flex items-center gap-[-10px] group cursor-pointer hover:scale-105 transition-transform">
              <div className="w-16 h-16 rounded-full border-4 border-white bg-slate-700 overflow-hidden relative z-10 shadow-xl">
                <div className="absolute inset-0 bg-gradient-to-b from-blue-400 to-blue-600 flex items-center justify-center"><span className="text-3xl">👤</span></div>
@@ -471,14 +440,12 @@ export default function Home() {
              </div>
           </button>
 
-          {/* MENU TOGGLE */}
           <div className="absolute left-1/2 -translate-x-1/2 bottom-6">
              <button onClick={() => setShowMenu(!showMenu)} className={`w-16 h-16 rounded-full shadow-2xl border-4 border-white flex items-center justify-center transition-all duration-300 ease-in-out z-50 ${showMenu ? 'rotate-45 bg-slate-700 scale-90' : 'bg-gradient-to-b from-amber-500 to-orange-600 hover:scale-110 active:scale-95'}`}>
                 {showMenu ? <span className="text-3xl text-white">✕</span> : <img src="/logo.png" className="w-10 h-10 opacity-80 invert" alt="Menu" />}
              </button>
           </div>
 
-          {/* RADAR */}
           <div className="flex flex-col items-center gap-1 group cursor-pointer hover:scale-105 transition-transform" onClick={() => setShowRadar(true)}>
             <div className="w-14 h-14 bg-white rounded-full border-2 border-slate-200 shadow-xl flex items-center justify-center relative overflow-hidden">
                <div className="absolute inset-0 bg-slate-50 opacity-50"></div>
@@ -490,7 +457,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 6. RADAR SHEET */}
       {showRadar && (
         <div className="absolute inset-0 z-[100] flex flex-col justify-end bg-black/60 backdrop-blur-sm transition-all" onClick={() => setShowRadar(false)}>
           <div className="bg-slate-50 rounded-t-3xl h-[60vh] p-4 animate-slide-up flex flex-col shadow-2xl overflow-hidden border-t-4 border-blue-400" onClick={(e) => e.stopPropagation()}>
@@ -503,7 +469,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* 7. MODALS */}
       {selectedPokemon && (
         <PokemonModal 
           pokemon={selectedPokemon} 
@@ -526,7 +491,6 @@ export default function Home() {
         />
       )}
 
-      {/* 8. LEVEL UP OVERLAY */}
       {levelUpModal && (
         <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/90 backdrop-blur-xl animate-in zoom-in duration-500">
            <div className="text-7xl mb-4 animate-bounce">🎊</div>

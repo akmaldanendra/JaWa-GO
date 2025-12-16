@@ -22,7 +22,7 @@ export async function GET() {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   const currentCount = count || 0;
-  const MAX_SPAWN = 30; // Naikin dikit biar rame
+  const MAX_SPAWN = 30; 
 
   if (currentCount >= MAX_SPAWN) {
     return NextResponse.json({ message: 'Map penuh.' });
@@ -60,7 +60,6 @@ export async function GET() {
       selectedId = commonIds[Math.floor(Math.random() * commonIds.length)];
     }
 
-    // Fallback kalo array kosong (misal blm set rarity di db)
     if (!selectedId) selectedId = pokedexData[Math.floor(Math.random() * pokedexData.length)].id;
 
     newSpawns.push({
